@@ -1,0 +1,19 @@
+flowchart LR
+  subgraph Clients
+    C[Customer / Back office<br/>Swagger UI or REST client]
+  end
+  subgraph App["Spring Boot 4 application (Java 21)"]
+    direction TB
+    W["Web layer<br/>Controllers + DTOs + Bean Validation<br/>GlobalExceptionHandler"]
+    S["Service layer (@Transactional)<br/>ScheduleService · FlightInstanceGenerator<br/>FlightSearchService · SeatMapService · BookingService"]
+    R["Repository layer<br/>Spring Data JPA / Hibernate 7"]
+    D["Domain model<br/>Airport · Aircraft · FlightSchedule<br/>FlightInstance · Booking · BookingSeat"]
+    J["Scheduler<br/>nightly window roll-forward"]
+    W --> S --> R
+    S --> D
+    J --> S
+  end
+  DB[("H2 database<br/>Flyway: db/migrations<br/>/h2-console")]
+  C -->|HTTP JSON| W
+  R -->|JDBC| DB
+  SW["Swagger UI<br/>/swagger-ui.html"] -.-> W

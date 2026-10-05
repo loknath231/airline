@@ -1,0 +1,15 @@
+# Production-safe overrides: run with --spring.profiles.active=prod (or SPRING_PROFILES_ACTIVE=prod).
+# The default profile is tuned for local evaluation (H2 console + demo schedules).
+spring:
+  jpa:
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+app:
+  seed-demo-data: false

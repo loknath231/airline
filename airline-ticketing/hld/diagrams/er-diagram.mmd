@@ -1,0 +1,62 @@
+erDiagram
+  AIRPORT ||--o{ FLIGHT_SCHEDULE : "source"
+  AIRPORT ||--o{ FLIGHT_SCHEDULE : "destination"
+  AIRCRAFT ||--o{ FLIGHT_SCHEDULE : "operates"
+  FLIGHT_SCHEDULE ||--o{ SCHEDULE_OPERATING_DAY : "runs on"
+  FLIGHT_SCHEDULE ||--o{ FLIGHT_INSTANCE : "generates"
+  FLIGHT_INSTANCE ||--o{ BOOKING : "has"
+  BOOKING ||--|{ BOOKING_SEAT : "holds"
+  FLIGHT_INSTANCE ||--o{ BOOKING_SEAT : "seat inventory"
+  AIRPORT {
+    varchar3 code PK
+    varchar name
+    varchar city
+    varchar country
+  }
+  AIRCRAFT {
+    bigint id PK
+    varchar aircraft_type
+    int total_rows
+    varchar seat_letters
+  }
+  FLIGHT_SCHEDULE {
+    bigint id PK
+    varchar flight_number UK
+    varchar source_airport FK
+    varchar destination_airport FK
+    time departure_time
+    time arrival_time
+    int arrival_day_offset
+    bigint aircraft_id FK
+    timestamptz created_at
+  }
+  SCHEDULE_OPERATING_DAY {
+    bigint schedule_id PK
+    varchar day_of_week PK
+  }
+  FLIGHT_INSTANCE {
+    bigint id PK
+    bigint schedule_id FK
+    date flight_date
+    timestamptz departure_utc
+    timestamptz arrival_utc
+    varchar status
+  }
+  BOOKING {
+    bigint id PK
+    varchar pnr UK
+    bigint flight_instance_id FK
+    varchar status
+    int passenger_count
+    timestamptz created_at
+    timestamptz cancelled_at
+    bigint version
+  }
+  BOOKING_SEAT {
+    bigint id PK
+    bigint booking_id FK
+    bigint flight_instance_id FK
+    varchar seat_label
+    varchar passenger_name
+    varchar active_seat_label
+  }

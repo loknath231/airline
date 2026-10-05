@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant C as Client
+  participant BC as BookingController
+  participant BS as BookingService
+  participant DB as H2
+  C->>BC: POST /api/v1/bookings
+  BC->>BC: Bean Validation (400 on failure)
+  BC->>BS: create(request)
+  Note over BS,DB: BEGIN TRANSACTION
+  BS->>DB: SELECT flight_instance ... FOR UPDATE
+  Note right of DB: other bookers of this flight wait here
+  BS->>BS: validate window, departure, seats exist, no duplicates
+  BS->>DB: SELECT active seats of flight
+  alt any requested seat taken
+    BS-->>C: 409 Conflict (rollback)
+  else all free
+    BS->>DB: INSERT booking + booking_seat rows
+    Note over DB: UNIQUE(flight_instance_id, active_seat_label) final guard
+    BS-->>C: 201 Created (commit, lock released)
+  end

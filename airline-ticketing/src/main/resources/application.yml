@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: airline-ticketing
+  datasource:
+    # In-memory H2. For persistence use: jdbc:h2:file:./data/airline;LOCK_TIMEOUT=10000
+    url: jdbc:h2:mem:airline;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  flyway:
+    # Migrations live in the repository's db/migrations folder (packaged as classpath:db/migration)
+    locations: classpath:db/migration
+    # Lets an existing file database created before Flyway was introduced adopt the migration history
+    baseline-on-migrate: true
+  jpa:
+    open-in-view: false
+    # Print every SQL statement Hibernate runs (formatted); switched off in the prod profile and during tests
+    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+    hibernate:
+      ddl-auto: none
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+app:
+  booking-window-days: 365
+  seed-demo-data: true

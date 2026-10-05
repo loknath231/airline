@@ -1,0 +1,7 @@
+target/
+data/
+.idea/
+*.iml
+# H2 file databases and trace logs, wherever they are created
+*.mv.db
+*.trace.db

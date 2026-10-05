@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant C as Client
+  participant BS as BookingService
+  participant DB as H2
+  C->>BS: POST /api/v1/bookings/{pnr}/cancel
+  Note over BS,DB: BEGIN TRANSACTION
+  BS->>DB: find flight_instance_id by PNR (404 if absent)
+  BS->>DB: SELECT flight_instance ... FOR UPDATE
+  BS->>DB: load booking + seats
+  alt already CANCELLED or flight departed
+    BS-->>C: 409 Conflict
+  else
+    BS->>DB: status=CANCELLED, active_seat_label=NULL for each seat
+    BS-->>C: 200 OK (commit) - seats bookable again
+  end
